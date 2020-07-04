@@ -10,24 +10,21 @@ import UIKit
 
 class TodoListViewController: UITableViewController {
     var todoItemArray = ["Mango","Tea","Bread"]
-    
-    let cellId = "CellId"
+    let defaults = UserDefaults.standard
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        
+        todoItemArray = defaults.stringArray(forKey: "TodoItemArray") ?? todoItemArray
     }
 
     @IBAction func addNewTodoItemBtnAction(_ sender: UIBarButtonItem) {
-        
-        var textField = UITextField()
-        
+                
         let alertController = UIAlertController.init(title: "Add New ToDo Item", message: "", preferredStyle: UIAlertController.Style.alert)
         
         
         alertController.addTextField { (textfield) in
             textfield.placeholder = "Add New Item."
-            textField = textfield
             
         }
         
@@ -35,10 +32,11 @@ class TodoListViewController: UITableViewController {
             alertController?.dismiss(animated: true)
         }))
         
-        alertController.addAction(UIAlertAction(title: "ADD", style: .default, handler: { [weak self] (_) in
-            
-            self?.todoItemArray.append(textField.text ?? "")
-            self?.tableView.reloadData()
+        alertController.addAction(UIAlertAction(title: "ADD", style: .default, handler: { [weak alertController] (_) in
+            let textField = alertController?.textFields![0]
+            self.todoItemArray.append(textField?.text ?? "")
+            self.defaults.set(self.todoItemArray, forKey: "TodoItemArray")
+            self.tableView.reloadData()
            
         }))
         
@@ -56,7 +54,7 @@ extension TodoListViewController {
         return todoItemArray.count
     }
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "CellId", for: indexPath)
         cell.textLabel?.text = todoItemArray[indexPath.row]
         return cell
     }
