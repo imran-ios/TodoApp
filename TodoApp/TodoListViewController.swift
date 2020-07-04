@@ -18,7 +18,34 @@ class TodoListViewController: UITableViewController {
         // Do any additional setup after loading the view.
     }
 
-
+    @IBAction func addNewTodoItemBtnAction(_ sender: UIBarButtonItem) {
+        
+        var textField = UITextField()
+        
+        let alertController = UIAlertController.init(title: "Add New ToDo Item", message: "", preferredStyle: UIAlertController.Style.alert)
+        
+        
+        alertController.addTextField { (textfield) in
+            textfield.placeholder = "Add New Item."
+            textField = textfield
+            
+        }
+        
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { [weak alertController] (_) in
+            alertController?.dismiss(animated: true)
+        }))
+        
+        alertController.addAction(UIAlertAction(title: "ADD", style: .default, handler: { [weak self] (_) in
+            
+            self?.todoItemArray.append(textField.text ?? "")
+            self?.tableView.reloadData()
+           
+        }))
+        
+        self.present(alertController, animated: true, completion: nil)
+        
+    }
+    
 }
 
 
